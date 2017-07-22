@@ -12,6 +12,7 @@ public class MainCharacter : MonoBehaviour {
 	public AudioHandler audioHandler;
 	public GameManager gameManager;
 	Rigidbody2D rigidBody;
+	bool movingAnim = false;
 	public enum CurrentSide{
 		DEFAULT,
 		LEFT,
@@ -39,9 +40,11 @@ public class MainCharacter : MonoBehaviour {
 		UpdateAnimations ();
 	}
 	void AnimationsLogic(){
+		movingAnim = rigidBody.velocity.x != 0 || rigidBody.velocity.y != 0 ? true : false;
 	}
 	void UpdateAnimations(){
 		AnimationsLogic ();
+		anim.SetBool ("moving",movingAnim);
 	}
 	void MainActions(Actions action){
 		switch (action){
