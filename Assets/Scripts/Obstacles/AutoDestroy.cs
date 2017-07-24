@@ -4,9 +4,18 @@ using UnityEngine;
 
 public class AutoDestroy : MonoBehaviour {
 	public float time;
-	private IEnumerator Start()
-	{
-		 yield return new WaitForSeconds( time );
-		 Destroy( gameObject ); 
+	float tmr;
+	Color color;
+
+	void Update(){
+		tmr += Time.deltaTime;
+		if  (tmr > time){
+			color = this.gameObject.GetComponentInChildren<SpriteRenderer> ().color;
+			color.a -= .1f;
+			this.gameObject.GetComponentInChildren<SpriteRenderer> ().color = color;
+
+			if (color.a <= 0)
+				Destroy (this.gameObject);
+		}
 	}
 }

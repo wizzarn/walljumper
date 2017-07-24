@@ -55,7 +55,7 @@ public class Follow : MonoBehaviour {
 			}
 			destination.y += deltaY;
 			destination.z -= targetDistance;
-
+			destination.x = transform.position.x;
 			//
 
 			if (vibracion)

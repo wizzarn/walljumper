@@ -6,7 +6,7 @@ public class VectorFollow : MonoBehaviour {
 
 	public Transform mTarget;
 	Vector3 mLookAtDirection;
-	float mSpeed = .8f;
+	float mSpeed = 1.5f;
 	const float EPSILON = .1f;
 	void Start () {
 		
