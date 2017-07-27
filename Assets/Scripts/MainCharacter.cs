@@ -13,6 +13,7 @@ public class MainCharacter : MonoBehaviour {
 	public GameManager gameManager;
 	Rigidbody2D rigidBody;
 	bool movingAnim = false;
+
 	public enum CurrentSide{
 		DEFAULT,
 		LEFT,
@@ -27,6 +28,7 @@ public class MainCharacter : MonoBehaviour {
 		GoUp,
 		GoDown
 	}
+	Actions currentAction;
 	void Start () {
 		rigidBody = this.gameObject.GetComponent<Rigidbody2D> ();
 		oldGravityScale = this.GetComponent<Rigidbody2D> ().gravityScale;
@@ -48,7 +50,7 @@ public class MainCharacter : MonoBehaviour {
 	}
 	void MainActions(Actions action){
 		switch (action){
-		case Actions.GoLeft:
+			case Actions.GoLeft:
 			rigidBody.velocity = new Vector2 (-movementVelocity.x,0);
 			break;
 			case Actions.GoRight:
@@ -63,6 +65,7 @@ public class MainCharacter : MonoBehaviour {
 			default:
 			break;
 		}
+		currentAction = action;
 
 	}
 	void Inputs(){
