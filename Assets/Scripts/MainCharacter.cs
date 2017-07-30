@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class MainCharacter : MonoBehaviour {
 
-	string tagColliderName = "rope_child";
+
 	private float oldGravityScale = 0;
 	Vector2 movementVelocity = new Vector2(1.5f,2);
 	Animator anim;
@@ -13,7 +13,19 @@ public class MainCharacter : MonoBehaviour {
 	public GameManager gameManager;
 	Rigidbody2D rigidBody;
 	bool movingAnim = false;
+	float invinsibleTime = 3;
+	float tmrInvinsibleTime=0;
+	public int currentLife = 0;
+	public int maxLife = 3;
+	public bool isHurt = false;
 
+	public enum CurrentStatus{
+		Idle,
+		Moving,
+		Dead,
+		Pause
+	}
+	public CurrentStatus currentStatus;
 	public enum CurrentSide{
 		DEFAULT,
 		LEFT,
@@ -21,7 +33,6 @@ public class MainCharacter : MonoBehaviour {
 		UP,
 		DOWN
 	}
-	CurrentSide currentSide;
 	public enum Actions{
 		GoLeft,
 		GoRight,
@@ -30,16 +41,30 @@ public class MainCharacter : MonoBehaviour {
 	}
 	Actions currentAction;
 	void Start () {
+		currentLife = maxLife;
 		rigidBody = this.gameObject.GetComponent<Rigidbody2D> ();
 		oldGravityScale = this.GetComponent<Rigidbody2D> ().gravityScale;
-		currentSide = CurrentSide.DEFAULT;
 		anim = this.GetComponent<Animator> ();
 	}
-
+	public List<GameObject>livesIcons = new List<GameObject>();
 	void Update () {
+		if (currentStatus == CurrentStatus.Pause || currentStatus == CurrentStatus.Dead)
+			return;
 		Inputs();
 		UpdateRayCasts ();
 		UpdateAnimations ();
+		InvinsibleTime ();
+	}
+	void InvinsibleTime(){
+		if (!isHurt)
+			return;
+		tmrInvinsibleTime += Time.deltaTime;
+		if (tmrInvinsibleTime > invinsibleTime) {
+			tmrInvinsibleTime = 0;
+			currentStatus = (rigidBody.velocity.x != 0 || rigidBody.velocity.y != 0) ? currentStatus = CurrentStatus.Moving : currentStatus = CurrentStatus.Idle;
+			isHurt = false;
+		}
+			
 	}
 	void AnimationsLogic(){
 		movingAnim = rigidBody.velocity.x != 0 || rigidBody.velocity.y != 0 ? true : false;
@@ -66,7 +91,33 @@ public class MainCharacter : MonoBehaviour {
 			break;
 		}
 		currentAction = action;
-
+	}
+	bool CanBeHurt(){
+		if (currentStatus == CurrentStatus.Pause || currentStatus == CurrentStatus.Dead || isHurt)
+			return false;
+		return true;
+	}
+	public void GetHurt(int damage){
+		if (!CanBeHurt ())
+			return;
+		isHurt = true;
+		currentLife -= damage;
+		if (currentLife < 0)
+			currentLife = 0;
+		
+		foreach(GameObject liveIcon in livesIcons)
+			liveIcon.SetActive (false);
+		for (int i = 0; i < currentLife; i++)
+			livesIcons [i].SetActive (true);
+		
+		if (currentLife <= 0) {
+			currentStatus = CurrentStatus.Dead;
+			currentLife = 0;
+			SetGameOver ();
+		}
+	}
+	void SetGameOver(){
+		gameManager.SetGameOver ();
 	}
 	void Inputs(){
 		//Go left
@@ -85,6 +136,8 @@ public class MainCharacter : MonoBehaviour {
 		if (Input.GetKeyDown(KeyCode.S)){
 			MainActions (Actions.GoDown);
 		}
+		currentStatus = CurrentStatus.Moving;
+
 	}
 	void UpdateRayCasts(){
 
@@ -138,8 +191,10 @@ public class MainCharacter : MonoBehaviour {
 	}
 	void OnTriggerStay2D(Collider2D other){
 	}
+
 	void OnTriggerEnter2D(Collider2D other){
 	}
 	void OnTriggerExit2D(Collider2D other){
+		
 	}
 }

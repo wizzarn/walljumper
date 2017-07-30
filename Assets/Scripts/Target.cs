@@ -14,8 +14,9 @@ public class Target : MonoBehaviour {
 	float currentLerpValue = 0;
 	float currentTimer = 0;
 	float tmr = 0;
-
+	bool isPlayerInside = false;
 	public GameObject objExplosion;
+	public GameObject audioSourceObj;
 
 	void Start () {
 		startPosition = this.transform.position;
@@ -28,6 +29,9 @@ public class Target : MonoBehaviour {
 				tmr = 0;
 				delayFlag = false;
 				Instantiate (objExplosion,this.transform.position, this.transform.rotation);
+				audioSourceObj.GetComponent<AudioHandler> ().InstanceShotGun ();
+				if (isPlayerInside)
+					targetObj.GetComponent<MainCharacter> ().GetHurt (DamageObjectsEnum.shotGunDamage);
 			}
 			return;
 		} else {
@@ -49,7 +53,16 @@ public class Target : MonoBehaviour {
 		endPosition = targetObj.transform.position;
 		delayFlag = true;
 		tmr = 0;
-
+	}
+	void OnTriggerEnter2D(Collider2D other){
+		if (other.tag == TagNamesEnum.mainCharacter){
+			isPlayerInside = true;
+		}
+	}
+	void OnTriggerExit2D(Collider2D other){
+		if (other.tag == TagNamesEnum.mainCharacter){
+			isPlayerInside = false;
+		}
 	}
 
 }
