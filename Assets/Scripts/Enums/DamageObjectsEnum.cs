@@ -8,5 +8,6 @@ public class DamageObjectsEnum {
 	public static int shotGunDamage = 3;
 	public static int metrallaDamage = 1;
 	public static int machineGunDamage = 1;
+	public static int wallSpikeDamage = 1;
 
 }

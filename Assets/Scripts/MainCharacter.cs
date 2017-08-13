@@ -4,21 +4,21 @@ using UnityEngine;
 
 public class MainCharacter : MonoBehaviour {
 
-
 	private float oldGravityScale = 0;
 	Vector2 movementVelocity = new Vector2(1.5f,2);
 	Animator anim;
 	public LayerMask obstacleMask;
 	public AudioHandler audioHandler;
 	public GameManager gameManager;
-	Rigidbody2D rigidBody;
+	public Rigidbody2D rigidBody;
 	bool movingAnim = false;
 	float invinsibleTime = 3;
 	float tmrInvinsibleTime=0;
 	public int currentLife = 0;
 	public int maxLife = 3;
 	public bool isHurt = false;
-
+	public Vector2 movementReduction = new Vector2(1,1);
+	public bool isUnderWindEffect = false;
 	public enum CurrentStatus{
 		Idle,
 		Moving,
@@ -91,6 +91,22 @@ public class MainCharacter : MonoBehaviour {
 			break;
 		}
 		currentAction = action;
+		if (isUnderWindEffect){
+			movementReduction.x = rigidBody.velocity.x *.5f;
+			movementReduction.y = rigidBody.velocity.y *.5f;
+			rigidBody.velocity = movementReduction;
+		}
+	}
+	public void WindMovementReduction(){
+		movementReduction.x = rigidBody.velocity.x *.5f;
+		movementReduction.y = rigidBody.velocity.y *.5f;
+		rigidBody.velocity = movementReduction;
+	}
+	public void RecoveryMovementFromWind(){
+		print (1);
+		movementReduction.x = rigidBody.velocity.x *2;
+		movementReduction.y = rigidBody.velocity.y *2;
+		rigidBody.velocity = movementReduction;
 	}
 	bool CanBeHurt(){
 		if (currentStatus == CurrentStatus.Pause || currentStatus == CurrentStatus.Dead || isHurt)
