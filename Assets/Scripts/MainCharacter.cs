@@ -7,6 +7,7 @@ public class MainCharacter : MonoBehaviour {
 	private float oldGravityScale = 0;
 	Vector2 movementVelocity = new Vector2(1.5f,2);
 	Animator anim;
+	private SpriteRenderer spriteRenderer;
 	public LayerMask obstacleMask;
 	public AudioHandler audioHandler;
 	public GameManager gameManager;
@@ -45,6 +46,7 @@ public class MainCharacter : MonoBehaviour {
 		rigidBody = this.gameObject.GetComponent<Rigidbody2D> ();
 		oldGravityScale = this.GetComponent<Rigidbody2D> ().gravityScale;
 		anim = this.GetComponent<Animator> ();
+		spriteRenderer = this.GetComponent<SpriteRenderer>();
 	}
 	public List<GameObject>livesIcons = new List<GameObject>();
 	void Update () {
@@ -72,6 +74,7 @@ public class MainCharacter : MonoBehaviour {
 	void UpdateAnimations(){
 		AnimationsLogic ();
 		anim.SetBool ("moving",movingAnim);
+		anim.SetFloat ("velX", rigidBody.velocity.x);
 	}
 	void MainActions(Actions action){
 		switch (action){
