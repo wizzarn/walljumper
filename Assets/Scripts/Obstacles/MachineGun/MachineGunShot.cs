@@ -4,10 +4,10 @@ using UnityEngine;
 
 public class MachineGunShot : MonoBehaviour {
 
-	float tmr=.5f;
+	float tmr=1;
 	float tmr_ = 0;
 
-	float tmrDestroy=1;
+	float tmrDestroy=1.5f;
 	float tmrDestroy_=0;
 	bool flagDestroyDelay = false;
 
