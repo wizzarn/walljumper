@@ -8,8 +8,9 @@ public class VectorFollow : MonoBehaviour {
 	Vector3 mLookAtDirection;
 	float mSpeed = 1.5f;
 	const float EPSILON = .1f;
+	Animator anim;
 	void Start () {
-		
+		anim = this.GetComponent<Animator> ();
 	}
 	
 
@@ -17,5 +18,6 @@ public class VectorFollow : MonoBehaviour {
 		mLookAtDirection = (mTarget.position - transform.position).normalized;
 		if ((transform.position - mTarget.position).magnitude > EPSILON)
 			transform.Translate (mLookAtDirection * Time.deltaTime * mSpeed);
+		anim.SetFloat ("velX", mLookAtDirection.x);
 	}
 }
